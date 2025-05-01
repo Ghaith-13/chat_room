@@ -11,6 +11,9 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final CustomButtonVariant variant;
   final bool isFullWidth;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final Color? textColor;
 
   const CustomButton({
     Key? key,
@@ -18,26 +21,29 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.variant = CustomButtonVariant.primary,
     this.isFullWidth = false,
+    this.backgroundColor,
+    this.borderColor,
+    this.textColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Define styles based on variant
-    Color backgroundColor;
-    Color textColor;
+    Color defaultBackgroundColor;
+    Color defaultTextColor;
 
     switch (variant) {
       case CustomButtonVariant.primary:
-        backgroundColor = const Color(0xFFF8F9FA);
-        textColor = const Color(0xFF1A1A1A);
+        defaultBackgroundColor = const Color(0xFFF8F9FA);
+        defaultTextColor = const Color(0xFF1A1A1A);
         break;
       case CustomButtonVariant.secondary:
-        backgroundColor = const Color(0xFFF8F9FA);
-        textColor = const Color(0xFF1A1A1A);
+        defaultBackgroundColor = const Color(0xFFF8F9FA);
+        defaultTextColor = const Color(0xFF1A1A1A);
         break;
       case CustomButtonVariant.danger:
-        backgroundColor = const Color(0xFFEF4444);
-        textColor = Colors.white;
+        defaultBackgroundColor = const Color(0xFFEF4444);
+        defaultTextColor = Colors.white;
         break;
     }
 
@@ -48,20 +54,22 @@ class CustomButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: Ink(
           decoration: BoxDecoration(
-            color: backgroundColor,
+            color: backgroundColor ?? defaultBackgroundColor,
             borderRadius: BorderRadius.circular(8),
+            border:
+                borderColor != null ? Border.all(color: borderColor!) : null,
           ),
           child: Container(
             width: isFullWidth ? double.infinity : null,
             padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 12,
+              horizontal: 10,
+              vertical: 8,
             ),
             child: Text(
               text,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: textColor,
+                color: textColor ?? defaultTextColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
