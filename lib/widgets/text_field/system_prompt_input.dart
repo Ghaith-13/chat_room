@@ -41,6 +41,7 @@ class SystemPromptInput extends StatelessWidget {
               width: 1,
             ),
           ),
+          padding: const EdgeInsets.all(3),
           child: TextField(
             controller: controller,
             onChanged: onChanged,

@@ -9,6 +9,8 @@ import '../widgets/button/custom_button.dart';
 import '../widgets/button/selection_button.dart';
 import '../widgets/search_dialog/provider_search_dialog.dart';
 import '../widgets/add_model_dialog/add_model_dialog.dart';
+import '../widgets/add_model_button.dart';
+import '../widgets/conversion/conversion_list_horizontal.dart';
 
 class SearchScreenSample extends StatefulWidget {
   const SearchScreenSample({Key? key}) : super(key: key);
@@ -42,6 +44,29 @@ class _SearchScreenSampleState extends State<SearchScreenSample> {
     text: 'Auto',
     isFree: false,
   );
+
+  final List<ConversionData> conversions = [
+    ConversionData(
+      title: 'Educational Advertisement',
+      subtitle: 'Plan for higher education marketing',
+      onTap: () => print('Educational ad tapped'),
+    ),
+    ConversionData(
+      title: 'Business Strategy',
+      subtitle: 'Develop growth and expansion plans',
+      onTap: () => print('Business strategy tapped'),
+    ),
+    ConversionData(
+      title: 'Marketing Campaign',
+      subtitle: 'Create social media marketing strategy',
+      onTap: () => print('Marketing campaign tapped'),
+    ),
+    ConversionData(
+      title: 'Product Launch',
+      subtitle: 'Plan new product launch timeline',
+      onTap: () => print('Product launch tapped'),
+    ),
+  ];
 
   void _showSearchDialog(BuildContext context) {
     final searchController = TextEditingController();
@@ -79,6 +104,16 @@ class _SearchScreenSampleState extends State<SearchScreenSample> {
     );
   }
 
+  void _handleKeyboardShortcut() {
+    // Implement keyboard shortcut functionality
+    _showAddModelDialog(context);
+  }
+
+  void _handleSettings() {
+    // Implement settings functionality
+    print('Opening settings...');
+  }
+
   @override
   void dispose() {
     _promptController.dispose();
@@ -89,198 +124,27 @@ class _SearchScreenSampleState extends State<SearchScreenSample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Model Settings'),
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        actions: [
-          // Add Model Button
-          IconButton(
-            onPressed: () => _showAddModelDialog(context),
-            icon: const Icon(
-              Icons.add_circle_outline,
-              color: Color(0xFF6B7280),
-            ),
+      backgroundColor: AppColors.gray50,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text('Model Settings'),
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            pinned: true,
           ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Top section with white background
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                // Model selection
-                SelectionButton(
-                  label: 'Model',
-                  data: _selectedModel,
-                  onTap: () => _showSearchDialog(context),
-                ),
-                const SizedBox(height: 24),
-                // Provider selection
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: SelectionButton(
-                        label: 'Provider',
-                        data: _selectedProvider,
-                        onTap: () {
-                          ProviderSearchDialog.show(
-                            context,
-                            selectedProvider: _selectedProvider.text,
-                            onProviderSelected: (provider) {
-                              setState(() {
-                                _selectedProvider = SelectionButtonData(
-                                  imageUrl: '', // Empty for default icon
-                                  text: provider,
-                                  isFree: false,
-                                );
-                              });
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    SortDialog(
-                      currentSort: _currentSort,
-                      onSortSelected: (sortBy) {
-                        setState(() {
-                          _currentSort = sortBy;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                // Name Input Row
-                NameInputRow(
-                  imageUrl:
-                      'https://i.namu.wiki/i/MIhJKlK5yVR3axxgE7_gHL-rsKjliShJKd3asUqg5KDdEsdOGut-9mCW4Ti1x7i2y8zCkxeZHQFR00sQg6BfYA.webp',
-                  isEnabled: _isNameEnabled,
-                  controller: _nameController,
-                  onToggleChanged: (value) {
-                    setState(() {
-                      _isNameEnabled = value;
-                    });
-                  },
-                  onChanged: (value) {
-                    print('Name changed: $value');
-                  },
-                ),
-              ],
-            ),
-          ),
-
-          // Divider
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: AppColors.gray200,
-          ),
-
-          // Bottom section with gray background
-          Expanded(
+          SliverToBoxAdapter(
             child: Container(
-              color: const Color(0xFFF8F9FA),
-              width: double.infinity,
+              color: AppColors.white,
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SystemPromptInput(
-                              controller: _promptController,
-                              onChanged: (value) {
-                                print('Prompt changed: $value');
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                            ExpandableParameterSection(
-                              title: "Reasoning Parameters",
-                              parameters: [
-                                SliderParameter(
-                                  label: "Max Tokens",
-                                  value: _maxTokens,
-                                  min: 0,
-                                  max: 2000,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _maxTokens = value;
-                                    });
-                                  },
-                                ),
-                                SliderParameter(
-                                  label: "Temperature",
-                                  value: _temperature,
-                                  min: 0,
-                                  max: 1,
-                                  decimals: 2,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _temperature = value;
-                                    });
-                                  },
-                                ),
-                                SliderParameter(
-                                  label: "Top P",
-                                  value: _topP,
-                                  min: 0,
-                                  max: 1,
-                                  decimals: 2,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _topP = value;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  AddModelButton(
+                    onAddTap: () => _showAddModelDialog(context),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          offset: const Offset(0, -1),
-                          blurRadius: 1,
-                        ),
-                      ],
-                    ),
-                    child: ActionButtonsRow(
-                      onApplyToAll: () {
-                        print('Apply to all pressed');
-                      },
-                      onReset: () {
-                        print('Reset pressed');
-                      },
-                      onRemove: () {
-                        print('Remove pressed');
-                      },
-                    ),
-                  ),
+                  const SizedBox(height: 24),
+                  ConversionListHorizontal(items: conversions),
                 ],
               ),
             ),
