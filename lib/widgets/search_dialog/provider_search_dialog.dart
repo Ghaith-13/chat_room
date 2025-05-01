@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../core/styles/colors.dart';
-import '../core/styles/radius.dart';
-import 'search_text_field.dart';
-import 'search_result_item.dart';
+import '../../core/styles/colors.dart';
+import '../../core/styles/radius.dart';
+import '../text_field/search_text_field.dart';
+import '../search_result_item.dart';
 
 class ProviderSearchDialog extends StatelessWidget {
   final TextEditingController? searchController;

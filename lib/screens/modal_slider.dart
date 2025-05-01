@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/parameter_slider.dart';
+import '../widgets/slide/parameter_slider.dart';
 
 class ModalSlider extends StatefulWidget {
   const ModalSlider({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/styles/colors.dart';
+import '../../core/styles/colors.dart';
 
 class SystemPromptInput extends StatelessWidget {
   final TextEditingController? controller;

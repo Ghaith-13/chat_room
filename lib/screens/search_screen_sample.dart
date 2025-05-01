@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../core/styles/colors.dart';
-import '../widgets/modal_search_dialog.dart';
-import '../widgets/sort_dialog.dart';
-import '../widgets/system_prompt_input.dart';
-import '../widgets/name_input_row.dart';
+import '../widgets/search_dialog/modal_search_dialog.dart';
+import '../widgets/dialog/sort_dialog.dart';
+import '../widgets/text_field/system_prompt_input.dart';
+import '../widgets/text_field/name_input_row.dart';
 import '../widgets/expandable_parameter_section.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/selection_button.dart';
-import '../widgets/provider_search_dialog.dart';
-import '../widgets/add_model_dialog.dart';
+import '../widgets/button/custom_button.dart';
+import '../widgets/button/selection_button.dart';
+import '../widgets/search_dialog/provider_search_dialog.dart';
+import '../widgets/add_model_dialog/add_model_dialog.dart';
 
 class SearchScreenSample extends StatefulWidget {
   const SearchScreenSample({Key? key}) : super(key: key);

@@ -1,15 +1,15 @@
-import 'package:chatroom/widgets/custom_button.dart';
-import 'package:chatroom/widgets/modal_search_dialog.dart';
-import 'package:chatroom/widgets/provider_search_dialog.dart';
+import 'package:chatroom/widgets/button/custom_button.dart';
+import 'package:chatroom/widgets/search_dialog/modal_search_dialog.dart';
+import 'package:chatroom/widgets/search_dialog/provider_search_dialog.dart';
 import 'package:flutter/material.dart';
-import '../core/styles/colors.dart';
-import '../core/styles/radius.dart';
-import 'search_text_field.dart';
-import 'name_input_row.dart';
-import 'system_prompt_input.dart';
-import 'expandable_parameter_section.dart';
-import 'selection_button.dart';
-import 'sort_dialog.dart';
+import '../../core/styles/colors.dart';
+import '../../core/styles/radius.dart';
+import '../text_field/search_text_field.dart';
+import '../text_field/name_input_row.dart';
+import '../text_field/system_prompt_input.dart';
+import '../expandable_parameter_section.dart';
+import '../button/selection_button.dart';
+import '../dialog/sort_dialog.dart';
 
 class AddModelDialog extends StatefulWidget {
   final TextEditingController nameController;

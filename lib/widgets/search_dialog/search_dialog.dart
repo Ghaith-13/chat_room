@@ -1,61 +1,83 @@
 import 'package:flutter/material.dart';
-import '../core/styles/colors.dart';
-import '../core/styles/radius.dart';
-import 'search_text_field.dart';
-import 'search_result_item.dart';
-
-enum SearchDialogType {
-  model,
-  provider,
-}
+import '../../core/styles/colors.dart';
+import '../../core/styles/radius.dart';
+import '../../core/styles/spacing.dart';
+import '../text_field/search_text_field.dart';
+import '../search_result_item.dart';
 
 class SearchDialogItem {
   final String title;
+  final String? subtitle;
   final String? imageUrl;
   final IconData? icon;
-  final bool isFree;
+  final Map<String, dynamic>? additionalData;
   final bool isSelected;
   final String? group;
 
   const SearchDialogItem({
     required this.title,
+    this.subtitle,
     this.imageUrl,
     this.icon,
-    this.isFree = false,
+    this.additionalData,
     this.isSelected = false,
     this.group,
   });
 }
 
 class SearchDialog extends StatelessWidget {
-  final SearchDialogType type;
+  final String title;
   final TextEditingController? searchController;
   final Function(String)? onSearch;
   final VoidCallback? onClose;
   final List<SearchDialogItem> items;
   final Function(SearchDialogItem) onItemSelected;
   final String? hintText;
+  final Widget Function(SearchDialogItem)? itemBuilder;
+  final double? maxHeight;
+  final double? maxWidth;
+  final EdgeInsets? contentPadding;
+  final bool showDivider;
+  final Color? backgroundColor;
+  final BorderRadius? borderRadius;
+  final bool showSearchLabel;
 
   const SearchDialog({
     Key? key,
-    required this.type,
+    required this.title,
     this.searchController,
     this.onSearch,
     this.onClose,
     required this.items,
     required this.onItemSelected,
     this.hintText,
+    this.itemBuilder,
+    this.maxHeight,
+    this.maxWidth = 600,
+    this.contentPadding,
+    this.showDivider = true,
+    this.backgroundColor,
+    this.borderRadius,
+    this.showSearchLabel = false,
   }) : super(key: key);
 
   static Future<void> show(
     BuildContext context, {
-    required SearchDialogType type,
+    required String title,
     TextEditingController? searchController,
     Function(String)? onSearch,
     VoidCallback? onClose,
     required List<SearchDialogItem> items,
     required Function(SearchDialogItem) onItemSelected,
     String? hintText,
+    Widget Function(SearchDialogItem)? itemBuilder,
+    double? maxHeight,
+    double? maxWidth,
+    EdgeInsets? contentPadding,
+    bool showDivider = true,
+    Color? backgroundColor,
+    BorderRadius? borderRadius,
+    bool showSearchLabel = false,
   }) {
     return showDialog(
       context: context,
@@ -63,20 +85,27 @@ class SearchDialog extends StatelessWidget {
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: SearchDialog(
-          type: type,
+          title: title,
           searchController: searchController,
           onSearch: onSearch,
           onClose: onClose,
           items: items,
           onItemSelected: onItemSelected,
           hintText: hintText,
+          itemBuilder: itemBuilder,
+          maxHeight: maxHeight,
+          maxWidth: maxWidth,
+          contentPadding: contentPadding,
+          showDivider: showDivider,
+          backgroundColor: backgroundColor,
+          borderRadius: borderRadius,
+          showSearchLabel: showSearchLabel,
         ),
       ),
     );
   }
 
   Widget _buildGroupedItems(BuildContext context) {
-    // Group items by their group property
     final groups = <String, List<SearchDialogItem>>{};
     for (var item in items) {
       final group = item.group ?? '';
@@ -105,11 +134,13 @@ class SearchDialog extends StatelessWidget {
       }
 
       children.addAll(
-        groupItems.map((item) => SearchResultItem(
+        groupItems.map((item) =>
+            itemBuilder?.call(item) ??
+            SearchResultItem(
               title: item.title,
               imageUrl: item.imageUrl,
               icon: item.icon,
-              isFree: item.isFree,
+              isFree: item.additionalData?['isFree'] ?? false,
               isSelected: item.isSelected,
               onTap: () {
                 onItemSelected(item);
@@ -120,10 +151,8 @@ class SearchDialog extends StatelessWidget {
     });
 
     return ListView(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: type == SearchDialogType.provider ? 8 : 0,
-      ),
+      padding: contentPadding ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shrinkWrap: true,
       children: children,
     );
@@ -133,43 +162,49 @@ class SearchDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-        maxWidth: 600,
+        maxHeight: maxHeight ?? MediaQuery.of(context).size.height * 0.8,
+        maxWidth: maxWidth ?? 600,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: AppRadius.lgRadius,
+        color: backgroundColor ?? AppColors.white,
+        borderRadius: borderRadius ?? AppRadius.lgRadius,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Search widget
+          if (showSearchLabel)
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 16, bottom: 8),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
           Padding(
             padding: EdgeInsets.only(
-              top: type == SearchDialogType.provider ? 0 : 10,
+              top: showSearchLabel ? 0 : 10,
+              left: 16,
+              right: 16,
             ),
             child: SearchTextField(
               controller: searchController,
               onChanged: onSearch,
-              hintText: hintText ??
-                  (type == SearchDialogType.model
-                      ? 'Search models'
-                      : 'Search providers'),
+              hintText: hintText ?? 'Search $title',
             ),
           ),
-
-          // Divider
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: AppColors.gray200,
-          ),
-
-          // Content area
+          if (showDivider)
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: AppColors.gray200,
+            ),
           Flexible(
             child: Container(
-              constraints: const BoxConstraints(maxHeight: 400),
+              constraints: BoxConstraints(maxHeight: maxHeight ?? 400),
               child: _buildGroupedItems(context),
             ),
           ),

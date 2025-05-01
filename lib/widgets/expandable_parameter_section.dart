@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/styles/colors.dart';
-import 'parameter_slider.dart';
+import 'slide/parameter_slider.dart';
 
 class SliderParameter {
   final String label;
